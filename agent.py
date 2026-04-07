@@ -60,15 +60,19 @@ if __name__ == "__main__":
     print("=" * 60)
     
     config = {"configurable": {"thread_id": "1"}}
+    conversation_history: list = []
     while True:
         user_input = input("\nBạn: ").strip()
         if user_input.lower() in ("quit", "exit", "q"):
             break
         print("\nTravelBuddy đang suy nghĩ...")
+        new_message = HumanMessage(content=user_input)
+        message_in = conversation_history + [new_message]
 
         result = graph.invoke(
-            {"messages": [HumanMessage(content=user_input)]},
+            {"messages": message_in},
             config=config
         )
+        conversation_history = result["messages"]
         final = result["messages"][-1]
         print(f"\nTravelBuddy: {final.content}")
